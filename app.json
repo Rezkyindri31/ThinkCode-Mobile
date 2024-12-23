@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "A",
-    "slug": "A",
+    "name": "ThinkCodeMobile",
+    "slug": "ThinkCodeMobile",
+    "scheme": "thinkcodemobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +23,11 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+       "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
