@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';  // Import useRouter for programmatic navigation
+import { useRouter } from 'expo-router';
 import '@/global.css';
 
 const { width } = Dimensions.get('window');
@@ -35,7 +35,7 @@ export default function OnboardingScreen() {
     };
 
     const handleNavigateToMateri = () => {
-        router.push('/materi');
+        router.push('/_tabs/materi');
     };
 
     return (
