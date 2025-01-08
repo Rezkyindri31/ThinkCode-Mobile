@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import '@/global.css';
+import React, { useState } from "react";
+import { View, Text, ImageBackground, ScrollView, Image, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
+import { useRouter } from "expo-router";
+import { useLoadFont } from "@/hooks/frontend/useLoadFont";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export default function OnboardingScreen() {
     const [currentPage, setCurrentPage] = useState(0);
@@ -11,23 +11,25 @@ export default function OnboardingScreen() {
 
     const pages = [
         {
-            image: require('@/assets/Book.png'),
-            title: 'Think Code',
-            subtitle: 'Mobile',
+            image: require("@/assets/images/Book.png"),
+            title: "Think Code",
+            subtitle: "Mobile",
         },
         {
-            image: require('@/assets/Ideas.png'),
-            title: 'Think Code',
-            subtitle: 'Membantu Anda belajar Algoritma dan Pemrograman',
+            image: require("@/assets/images/Ideas.png"),
+            title: "Think Code",
+            subtitle: "Membantu Anda belajar Algoritma dan Pemrograman",
         },
         {
-            image: require('@/assets/Book.png'),
-            title: 'Penasaran?',
-            subtitle: 'Anda ingin belajar Algoritma dan Pemrograman?',
-            buttonText: 'Mulai Belajar',
-            targetScreen: '/_tabs/materi',
+            image: require("@/assets/images/Logo.png"),
+            title: "Penasaran?",
+            subtitle: "Anda ingin belajar Algoritma dan Pemrograman?",
+            buttonText: "Mulai Belajar",
+            targetScreen: "/_tabs/materi",
         },
     ];
+
+    const fontsLoaded = useLoadFont();
 
     const handleScroll = (event) => {
         const pageIndex = Math.round(event.nativeEvent.contentOffset.x / width);
@@ -35,47 +37,65 @@ export default function OnboardingScreen() {
     };
 
     const handleNavigateToMateri = () => {
-        router.push('/_tabs/materi');
+        router.push("/_tabs/materi");
     };
 
-    return (
-        <View className="flex-1 bg-[#e6f4f1]">
-            <ScrollView
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                onScroll={handleScroll}
-                scrollEventThrottle={16}
-            >
-                {pages.map((page, index) => (
-                    <View key={index} style={{ width, alignItems: 'center', justifyContent: 'center' }}>
-                        <Image
-                            source={page.image}
-                            className="w-72 h-72"
-                            resizeMode="contain"
-                        />
-                        <Text className="text-5xl font-semibold text-[#00238e]">{page.title}</Text>
-                        <Text className="text-2xl text-center font-semibold text-black">{page.subtitle}</Text>
-                        {page.buttonText && (
-                            <TouchableOpacity
-                                onPress={handleNavigateToMateri} // Trigger navigation when button is pressed
-                                className="mt-6 bg-[#00238e] px-6 py-2 rounded-full"
-                            >
-                                <Text className="text-white text-xl">{page.buttonText}</Text>
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                ))}
-            </ScrollView>
-
-            <View className="absolute bottom-10 flex-row gap-2 self-center">
-                {pages.map((_, index) => (
-                    <View
-                        key={index}
-                        className={`w-3 h-3 rounded-full ${currentPage === index ? 'bg-black' : 'bg-gray-400'}`}
-                    ></View>
-                ))}
+    if (!fontsLoaded) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color="#00238e" />
+                <Text style={{ marginTop: 10, fontSize: 18, color: "#00238e" }}>Memuat Font...</Text>
             </View>
+        );
+    }
+
+    return (
+        <View style={{ flex: 1 }}>
+            <ImageBackground
+                source={require("@/assets/images/Background.png")}
+                style={{ flex: 1 }}
+                resizeMode="cover"
+            >
+                <ScrollView
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                >
+                    {pages.map((page, index) => (
+                        <View key={index} style={{ width, alignItems: "center", justifyContent: "center" }}>
+                            <Image source={page.image} style={{ width: 150, height: 150 }} resizeMode="contain" />
+                            <Text style={{ fontFamily: "Jersey-Regular", fontSize: 60, color: "#00238e" }}>
+                                {page.title}
+                            </Text>
+                            <Text style={{ fontFamily: "Jersey-Regular", fontSize: 25, color: "black", textAlign: "center" }}>
+                                {page.subtitle}
+                            </Text>
+                            {page.buttonText && (
+                                <TouchableOpacity onPress={handleNavigateToMateri} style={{ marginTop: 20, backgroundColor: "#00238e", paddingVertical: 12, paddingHorizontal: 24, borderRadius: 25 }}>
+                                    <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>{page.buttonText}</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    ))}
+                </ScrollView>
+
+                <View style={{ position: "absolute", bottom: 20, flexDirection: "row", alignSelf: "center" }}>
+                    {pages.map((_, index) => (
+                        <View
+                            key={index}
+                            style={{
+                                width: 8,
+                                height: 8,
+                                borderRadius: 4,
+                                marginHorizontal: 4,
+                                backgroundColor: currentPage === index ? "black" : "gray",
+                            }}
+                        />
+                    ))}
+                </View>
+            </ImageBackground>
         </View>
     );
 }
